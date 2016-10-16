@@ -48,6 +48,36 @@ Reset_Handler:
         mov         lr, pc
         bx          r5
 
+sudoku_candidatos_init_arm:
+        mov         r3,#0x1FF0      /* mascara */
+        mov         r4,#0           /* f */
+        mov         r5,#0           /* c */
+buc1    cmp         r4,#144
+        beq         finbuc1
+buc2    cmp         r5,#18
+        moveq       r5,#0
+        beq         finbuc2
+        add         r6,r4,r5
+        ldr         r7,[r0+r6]
+        orr         r7,r6,r3
+        str         r7,[r0+r6]
+        add         r5,r5,#2
+        b           buc2
+finbuc2 add         r4,r4,#32
+        mov         r5,#0
+        b           buc1
+finbuc1 mov         r4,#0
+buk1    cmp         r4,#144
+        beq         finbuk1
+buk2    cmp         r5,#18
+        moveq       r5,#0
+        beq         finbuk2
+        add         r6,r4,r5
+        ldr         r7,[r0+r6]
+        and         r7,r7,#15
+        cmp         r7,#0
+        
+        
 stop:
         B       stop        /*  end of program */
 
