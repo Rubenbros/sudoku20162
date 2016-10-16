@@ -76,7 +76,7 @@ buk2    cmp         r5,#18
         ldr         r7,[r0+r6]
         and         r7,r7,#15
         cmp         r7,#0
-        
+              
         
 stop:
         B       stop        /*  end of program */
