@@ -49,17 +49,18 @@ Reset_Handler:
         bx          r5
 
 sudoku_candidatos_init_arm:
-        mov         r3,#0x1FF0      /* mascara */
+        mov         r6,#0     		/* celdas vacias */
+        mov			r3,#0x1FF0		/* mascara */
         mov         r1,#0           /* f */
         mov         r2,#0           /* c */
-buc1    cmp         r1,#144
+buc1    cmp         r1,#288
         beq         finbuc1
 buc2    cmp         r1,#18
         moveq       r2,#0
         beq         finbuc2
         add         r4,r1,r2
         ldr         r5,[r0+r4]
-        orr         r5,r4,r3
+        orr         r5,r4,r6
         str         r5,[r0+r4]
         add         r2,r2,#2
         b           buc2
@@ -67,7 +68,7 @@ finbuc2 add         r1,r1,#32
         mov         r2,#0
         b           buc1
 finbuc1 mov         r1,#0
-buk1    cmp         r1,#144
+buk1    cmp         r1,#288
         beq         finbuk1
 buk2    cmp         r2,#18
         moveq       r2,#0
@@ -76,14 +77,33 @@ buk2    cmp         r2,#18
         ldr         r5,[r0+r4]
         and         r5,r5,#15
         cmp         r5,#0
-              
-        
+        pushne		{r3-r6}
+        blne		sudoku_candidatos_propagar_arm
+        popne		{r3-r6}
+        addeq		r6,r6,#1
+        b           buc2
+finbuk2 add         r1,r1,#32
+        mov         r2,#0
+        b           buc1
+finbuk1 bx
+
+sudoku_candidatos_propagar_arm:
+		add			r3,r2,r1
+		ldr			r4,[r0+r3]
+		and			r4,r4,#15		/*r4=valor de celda*/
+		add			r5,r4,#3		/*r5=valor+3*/
+		mov			r6,#1
+		mvn			r5,r6 LSL r5	/*r5=mascara*/
+
+
 stop:
         B       stop        /*  end of program */
 
 ################################################################################
 .data
-.ltorg     
+
+.ltorg
+
 .align 5    /* guarantees 32-byte alignment (2^5) */
 
 # huecos para cuadrar
