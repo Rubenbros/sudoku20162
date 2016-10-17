@@ -90,11 +90,31 @@ finbuk1 bx
 sudoku_candidatos_propagar_arm:
 		add			r3,r2,r1
 		ldr			r4,[r0+r3]
-		and			r4,r4,#15		/*r4=valor de celda*/
-		add			r5,r4,#3		/*r5=valor+3*/
+		and			r4,r4,#15				/*r4=valor de celda*/
+		add			r5,r4,#3				/*r5=valor+3*/
 		mov			r6,#1
-		mvn			r5,r6 LSL r5	/*r5=mascara*/
-
+		mvn			r5,r6 LSL r5			/*r5=mascara*/
+		mov			r6,#5
+		cmp			r6,r1 LSR #5
+		movhi		r6,#6					/*r6=fila_0*/
+		bhi			fila0			
+		cmp			r6,r1 LSR #5
+		movhi		r6,#3
+		bhi			fila0
+		mov			r6,#0
+fila0	mov			r7,#5
+		cmp			r7,r2 LSR #1
+		movhi		r7,#6					/*r7=columna_0*/
+		bhi			column0			
+		cmp			r7,r2 LSR #1
+		movhi		r2,#3
+		bhi			column0
+		mov			r7,#0	
+column0	mov			r8,#0					//r8=i=0
+buc		cmp			r8,#9
+		beq			finbuck
+		add			r9,r0,r1				//r9=primera columna de fila en r1
+		ldr			r9,[r9,+r8,LSL #1]		//r9=contenido de la celda [fila][i]
 
 stop:
         B       stop        /*  end of program */
