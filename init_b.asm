@@ -98,18 +98,18 @@ sudoku_candidatos_propagar_arm:
 		add			r5,r4,#3				//r5=valor+3
 		mov			r6,#1
 		mvn			r5,r6,LSL r5			//r5=mascara
-		mov			r6,#160
+		mov			r6,#192
 		cmp			r1,r6
-		bhi			fila0
-		mov			r6,#64
+		bge			fila0
+		mov			r6,#96
 		cmp			r1,r6
-		movls		r6,#0
-fila0:	mov			r7,#10
+		movlt		r6,#0
+fila0:	mov			r7,#12
 		cmp			r2,r7
-		bhi			column0
-		mov			r7,#4
+		bge			column0
+		mov			r7,#6
 		cmp			r2,r7
-		movls		r7,#0
+		movlt		r7,#0
 column0:mov			r3,#0					//r3=ifila=0
 		mov			r4,#0					//r4=icolumna=0
 		add			r8,r0,r1				//r8=celda[fila][i]
