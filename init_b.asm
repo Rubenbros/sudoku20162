@@ -47,7 +47,7 @@ Reset_Handler:
         ldr         r5, = sudoku9x9
         mov         lr, pc
         bx          r5*/
-
+.global sudoku_candidatos_init_arm
 sudoku_candidatos_init_arm:
         mov         r6,#0     		/* celdas vacias */
         ldr			r3,=mascara		/* mascara */
@@ -92,6 +92,7 @@ finbuk1:mov			r0,r6			//return celdas_vacias
 		bx			r14
 
 
+.global sudoku_candidatos_propagar_arm
 sudoku_candidatos_propagar_arm:
 		add			r3,r2,r1				//r3=[f][c]
 		ldrh		r4,[r0,r3]				//r4=celda[f][c]
@@ -148,6 +149,7 @@ finbuc: bx			r14						//return
 stop:
         B       stop        /*  end of program */
 ################################################################################
+.global sudoku_candidatos_propagar_thumb
 sudoku_candidatos_propagar_thumb:
 .thumb
 		add			r3,r2,r1				//r3=[f][c]
