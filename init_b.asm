@@ -54,94 +54,94 @@ sudoku_candidatos_init_arm:
         ldr			r3,[r3]
         mov         r1,#0           /* f */
         mov         r2,#0           /* c */
-buc1:   cmp         r1,#288
-        beq         finbuc1
-buc2:   cmp         r2,#18
-        moveq       r2,#0
-        beq         finbuc2
-        add         r4,r1,r2
-        ldrh        r5,[r0,r4]
-        orr         r5,r3,r5
-        strh        r5,[r0,r4]
-        add         r2,r2,#2
+buc1:   cmp         r1,#288			//compara la fila con 288 (32*9)
+        beq         finbuc1			//(f=9)
+buc2:   cmp         r2,#18			//compara la columna con 18 (2*9)
+        beq         finbuc2			//(c=9)
+        add         r4,r1,r2		//r4=[f][c]
+        ldrh        r5,[r0,r4]		//r5=celda[f][c]
+        orr         r5,r3,r5		//r5=celda[f][c] | mascara
+        strh        r5,[r0,r4]		//celda[f][c] = r5
+        add         r2,r2,#2		//c++
         b           buc2
-finbuc2:add         r1,r1,#32
-        mov         r2,#0
+finbuc2:add         r1,r1,#32		//f++
+        mov         r2,#0			//c=0
         b           buc1
-finbuc1:mov         r1,#0
-buk1:   cmp         r1,#288
-        beq         finbuk1
-buk2:   cmp         r2,#18
-        moveq       r2,#0
-        beq         finbuk2
-        add         r4,r1,r2
-        ldrh        r5,[r0,r4]
-        and         r5,r5,#15
-        cmp         r5,#0
-        addeq		r6,r6,#1
-        beq			nay
-        push		{r3-r10}
+finbuc1:mov         r1,#0			//f=0
+buk1:   cmp         r1,#288			//compara la fila con 288 (32*9)
+        beq         finbuk1			//(f=9)
+buk2:   cmp         r2,#18			//compara la columna con 18 (2*9)
+        beq         finbuk2			//(c=9)
+        add         r4,r1,r2		//r4=[f][c]
+        ldrh        r5,[r0,r4]		//r5=celda[f][c]
+        and         r5,r5,#15		//r5=valor_celda
+        cmp         r5,#0			//compara valor con 0
+        addeq		r6,r6,#1		//(celdas_vacias++)
+        beq			nay				//(valor_celda=0)
+        push		{r3-r10}		//guardar contexto
         bl			sudoku_candidatos_propagar_arm
-        pop			{r3-r10}
-nay:    add			r2,r2,#2
+        pop			{r3-r10}		//restablecer contexto
+nay:    add			r2,r2,#2		//c++
         b           buk2
-finbuk2:add         r1,r1,#32
-        mov         r2,#0
+finbuk2:add         r1,r1,#32		//f++
+        mov         r2,#0			//c=0
         b           buk1
-finbuk1:bx			r14
+finbuk1:mov			r0,r6			//return celdas_vacias
+		bx			r14
 
 
 sudoku_candidatos_propagar_arm:
-		add			r3,r2,r1
-		ldrh		r4,[r0,r3]
+		add			r3,r2,r1				//r3=[f][c]
+		ldrh		r4,[r0,r3]				//r4=celda[f][c]
 		and			r4,r4,#15				//r4=valor de celda
 		add			r5,r4,#3				//r5=valor+3
-		mov			r6,#1
+		mov			r6,#1					//r6=1 (preparar operandos para mascara)
 		mvn			r5,r6,LSL r5			//r5=mascara
-		mov			r6,#192
-		cmp			r1,r6
-		bge			fila0
-		mov			r6,#96
-		cmp			r1,r6
-		movlt		r6,#0
-fila0:	mov			r7,#12
-		cmp			r2,r7
-		bge			column0
-		mov			r7,#6
-		cmp			r2,r7
-		movlt		r7,#0
+		mov			r6,#192					//r6=fila0=192=(32*6)
+		cmp			r1,r6					//(comparar fila con 6)*32
+		bge			fila0					//(f>=192)
+		mov			r6,#96					//r6=fila0=96=(32*3)
+		cmp			r1,r6					//(f>=64)
+		movlt		r6,#0					//(r6=fila0=0)
+fila0:	mov			r7,#12					//r7=column0=12=(2*6)
+		cmp			r2,r7					//(comparar columna con 6)*2
+		bge			column0					//(c>=12)
+		mov			r7,#6					//r7=column0=6=(2*3)
+		cmp			r2,r7					//(c>=6)
+		movlt		r7,#0					//(r7=column0=0)
 column0:mov			r3,#0					//r3=ifila=0
 		mov			r4,#0					//r4=icolumna=0
 		add			r8,r0,r1				//r8=celda[fila][i]
 		add			r9,r0,r2				//r9=celda[i][columna]
-buck:	cmp			r3,#288
-		beq			finbuck
+buck:	cmp			r3,#288					//compara la fila con 288 (32*9)
+		beq			finbuck					//(f=9)
 		ldrh		r10,[r8,r4]				//r10=contenido de la celda [fila][i]
-		and			r10,r10,r5
-		strh		r10,[r8,r4]
+		and			r10,r10,r5				//r10=celda[fila][i] & mascara
+		strh		r10,[r8,r4]				//celda[fila][i]=celda[fila][i] & mascara
 		ldrh		r10,[r9,r3]				//r10=contenido de la celda [i][columna]
-		and			r10,r10,r5
-		strh		r10,[r9,r3]
-		add			r3,r3,#32
-		add			r4,r4,#2
+		and			r10,r10,r5				//r10=celda[i][columna] & mascara
+		strh		r10,[r9,r3]				//celda[i][columna]=celda[i][columna] & mascara
+		add			r3,r3,#32				//ifilas++
+		add			r4,r4,#2				//icolumnas++
 		b 			buck
-finbuck:mov			r3,r6					//r3=f
+finbuck:mov			r3,r6					//r3=fila_0=f
 		add			r6,r6,#96				//fila_0=fila_0+3
-buc:	cmp			r3,r6
-		bge			finbuc
-		mov			r4,r7					//r4=c
+buc:	cmp			r3,r6					//compara fila con fila_0+3
+		bge			finbuc					//fila>=fila_0+3
+		mov			r4,r7					//r4=columna_0=c
 		add			r8,r7,#6				//r8=columna_0+3
-		add			r9,r0,r3
-bux:	cmp			r4,r8
-		bge			finbux
-		ldrh		r10,[r9,r4]
-		and			r10,r10,r5
-		strh		r10,[r9,r4]
-		add			r4,r4,#2
+		add			r9,r0,r3				//r9=celda[fila_0][0]
+bux:	cmp			r4,r8					//compara columna_0 con columna_0+3
+		bge			finbux					//columna_0>=columna_0+3
+		ldrh		r10,[r9,r4]				//r10=celda[f][c]
+		and			r10,r10,r5				//r10=celda[f][c] & mascara
+		strh		r10,[r9,r4]				//celda[f][c]=celda[f][c] & mascara
+		add			r4,r4,#2				//c++
 		b			bux
-finbux: add			r3,r3,#32
+finbux: add			r3,r3,#32				//f++
 		b			buc
-finbuc: bx			r14
+finbuc: bx			r14						//return
+
 
 stop:
         B       stop        /*  end of program */
