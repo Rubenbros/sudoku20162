@@ -101,6 +101,7 @@ sudoku_candidatos_init_c(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS])
     return (celdas_vacias);
 }
 
+
 /* *****************************************************************************
  * Funciones p�blicas
  * (pueden ser invocadas desde otro fichero) */
