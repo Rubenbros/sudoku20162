@@ -41,5 +41,9 @@ int
 sudoku_candidatos_propagar_thumb(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS],
                                  uint8_t fila, uint8_t columna);
 
+void
+pruebasInitPropagar(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS],
+                    char init,
+                    char propagar);
 
 #endif /* SUDOKU_H_2016 */
