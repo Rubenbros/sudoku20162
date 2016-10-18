@@ -160,10 +160,8 @@ sudoku_candidatos_propagar_thumb:
 		mvn			r5,r6					//r5=mascara
 		mov			r3,#0					//r3=ifila=0
 		mov			r4,#0					//r4=icolumna=0
-bucx:	LSR			r3,r3,#5
-		cmp			r3,#9					//compara la fila con 9
-		beq			finbucx					//(f=9)
-		LSL			r3,r3,#5
+bucx:	cmp			r4,#18
+		beq			finbucx					//(i=9)
 		add			r6,r0,r1				//r6=celda[fila][i]
 		ldrh		r7,[r6,r4]				//r10=contenido de la celda [fila][i]
 		and			r7,r7,r5				//r10=celda[fila][i] & mascara
@@ -193,7 +191,7 @@ colu0:	mov			r1,r6					//r1=fila_0=f
 		add			r6,r6,#96				//fila_0=fila_0+3
 		add			r3,r7,#6				//r3=columna_0+3
 		add			r0,r0,r1				//r0=celda[fila_0][0]
-		add			r0,r0,r2				//r0=celda[fila_0][columna_0]
+		add			r0,r0,r7				//r0=celda[fila_0][columna_0]
 col:	cmp			r1,r6					//compara fila con fila_0+3
 		bge			fincol					//fila>=fila_0+3
 		mov			r2,r7					//r2=columna_0=c
