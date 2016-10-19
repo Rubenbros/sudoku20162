@@ -62,7 +62,8 @@ sudoku_candidatos_propagar_c(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS],
  * necesario tras borrar o cambiar un valor (listas corrompidas)
  * retorna el numero de celdas vacias */
 static int
-sudoku_candidatos_init_c(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS])
+sudoku_candidatos_init_c(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS],
+						 char propagar)
 {
     int celdas_vacias = 0;
     /* recorrer cuadricula celda a celda */
@@ -83,7 +84,21 @@ sudoku_candidatos_init_c(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS])
     while(f<9) {
         uint8_t c=0;
         while(c<9) {
-            if (celda_leer_valor(cuadricula[f][c]) != 0) sudoku_candidatos_propagar_c(cuadricula, f, c);
+            if (celda_leer_valor(cuadricula[f][c]) != 0) {
+				switch (propagar) {
+					case 'C': // C
+					sudoku_candidatos_propagar_c(cuadricula, f, c);
+					break;
+
+					case 'A': // ARM
+					sudoku_candidatos_propagar_arm(cuadricula, f*32, c*2);
+					break;
+
+					case 'T': // Thumb
+					sudoku_candidatos_propagar_thumb(cuadricula, f*32, c*2);
+					break;
+				}
+			}
             else {
                 celdas_vacias++;
             }
@@ -101,6 +116,20 @@ sudoku_candidatos_init_c(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS])
     return (celdas_vacias);
 }
 
+int sudokusIguales(const CELDA cuadriculaA[NUM_FILAS][NUM_COLUMNAS],
+                   CELDA cuadriculaB[NUM_FILAS][NUM_COLUMNAS]) {
+    int iguales = 1; // partimos de que son iguales
+    int f=0, c=0;
+    while (f<9 && iguales) {
+        c=0;
+        while (c<9 && iguales) {
+            iguales = cuadriculaA[f][c] == cuadriculaB[f][c];
+            c++;
+        }
+        f++;
+    }
+    return iguales;
+}
 
 /* *****************************************************************************
  * Funciones p�blicas
@@ -113,9 +142,46 @@ void
 sudoku9x9(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS], char *ready)
 {
     int celdas_vacias;     //numero de celdas aun vacias
+	
+	const CELDA cuadriculaIdeal[NUM_FILAS][NUM_COLUMNAS] = {
+			{0x8cb5,0x00b0,0x0c30,0x8293,0x00b0,0x0a80,0x1c10,0x18b0,0x1ea0,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000},
+			{0x0cf0,0x00f0,0x0c70,0x0290,0x80b9,0x0a80,0x0c10,0x08b0,0x8ea5,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000},
+			{0x08b0,0x80b9,0x8836,0x8097,0x00b0,0x8885,0x0810,0x88b3,0x08a0,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000},
+			{0x0470,0x8078,0x0470,0x8089,0x0580,0x0480,0x8156,0x0130,0x0060,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000},
+			{0x1460,0x0060,0x9465,0x8008,0x8406,0x8401,0x9044,0x1020,0x1060,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000},
+			{0x1010,0x0210,0x9014,0x8002,0x0100,0x8003,0x1910,0x9917,0x1800,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000},
+			{0x08d0,0x80d7,0x0850,0x8095,0x00d0,0x8089,0x8842,0x8886,0x08c0,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000},
+			{0x90f6,0x01f0,0x1070,0x0090,0x84d8,0x0480,0x1540,0x1180,0x14c0,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000},
+			{0x18c0,0x01c0,0x1840,0x0280,0x04c0,0x8682,0x1d40,0x1980,0x9cc1,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}
+		};
 
     /* calcula lista de candidatos, versi�n C */
-    celdas_vacias = sudoku_candidatos_init_c(cuadricula);
+    celdas_vacias = sudoku_candidatos_init_c(cuadricula, 'A');
+	if (!sudokusIguales(cuadriculaIdeal, cuadricula)) {
+		int tmp=0;
+	}
+    celdas_vacias = sudoku_candidatos_init_c(cuadricula, 'C');
+	if (!sudokusIguales(cuadriculaIdeal, cuadricula)) {
+		int tmp=0;
+	}
+    celdas_vacias = sudoku_candidatos_init_c(cuadricula, 'T');
+	if (!sudokusIguales(cuadriculaIdeal, cuadricula)) {
+		int tmp=0;
+	}
+	/*
+    celdas_vacias = sudoku_candidatos_init_arm(cuadricula, 'C');
+	if (!sudokusIguales(cuadriculaIdeal, cuadricula)) {
+		int tmp=0;
+	}
+    celdas_vacias = sudoku_candidatos_init_arm(cuadricula, 'A');
+	if (!sudokusIguales(cuadriculaIdeal, cuadricula)) {
+		int tmp=0;
+	}
+    celdas_vacias = sudoku_candidatos_init_arm(cuadricula, 'T');
+	if (!sudokusIguales(cuadriculaIdeal, cuadricula)) {
+		int tmp=0;
+	
+	*/
 }
 
 //void
@@ -131,7 +197,7 @@ sudoku9x9(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS], char *ready)
 
 /* repetir para otras versiones (ARM, THUMB) */
 
-
+/*
 void
 pruebasInitPropagar(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS], char init, char propagar)
 {
@@ -165,6 +231,7 @@ pruebasInitPropagar(CELDA cuadricula[NUM_FILAS][NUM_COLUMNAS], char init, char p
         break;
     }
 }
+*/
 
 /*
 void

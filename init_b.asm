@@ -42,67 +42,62 @@ Reset_Handler:
 # using the stack pointer
 # function __c_copy is in copy.c
 
-# function main is in prueba.c
-.extern     main
-        LDR     r3, = main
-        MOV     lr, pc
-
 # FUNCTION CALL the parameters are stored in r0 and r1
 # If there are 4 or less parameters when calling a C function
 # the compiler assumes that they have been stored in r0-r3.
 # If there are more parameters you have to store them
 # in the data stack using the stack pointer
-        BX      r3
-stop_pruebas:
-        B       stop_pruebas        /*  end of program */
 
 #####################################
         LDR     r0, =cuadricula  /*  puntero a la @ inicial de la cuadricula */
 
-/*.extern     sudoku9x9
+.extern     sudoku9x9
         ldr         r5, = sudoku9x9
         mov         lr, pc
-        bx          r5*/
+        bx          r5
 .global sudoku_candidatos_init_arm
 sudoku_candidatos_init_arm:
         mov         r6,#0           /* celdas vacias */
         ldr         r3,=mascara     /* mascara */
         ldr         r3,[r3]
-        mov         r1,#0           /* f */
+        mov         r7,#0           /* f */
         mov         r2,#0           /* c */
 buc1:
-        cmp         r1,#288         //compara la fila con 288 (32*9)
+        cmp         r7,#288         //compara la fila con 288 (32*9)
         beq         finbuc1         //(f=9)
 buc2:
         cmp         r2,#18          //compara la columna con 18 (2*9)
         beq         finbuc2         //(c=9)
-        add         r4,r1,r2        //r4=[f][c]
+        add         r4,r7,r2        //r4=[f][c]
         ldrh        r5,[r0,r4]      //r5=celda[f][c]
         orr         r5,r3,r5        //r5=celda[f][c] | mascara
         strh        r5,[r0,r4]      //celda[f][c] = r5
         add         r2,r2,#2        //c++
         b           buc2
 finbuc2:
-        add         r1,r1,#32       //f++
+        add         r7,r7,#32       //f++
         mov         r2,#0           //c=0
         b           buc1
 finbuc1:
-        mov         r1,#0           //f=0
+        mov         r7,#0           //f=0
 buk1:
-        cmp         r1,#288         //compara la fila con 288 (32*9)
+        cmp         r7,#288         //compara la fila con 288 (32*9)
         beq         finbuk1         //(f=9)
 buk2:
         cmp         r2,#18          //compara la columna con 18 (2*9)
         beq         finbuk2         //(c=9)
-        add         r4,r1,r2        //r4=[f][c]
+        add         r4,r7,r2        //r4=[f][c]
         ldrh        r5,[r0,r4]      //r5=celda[f][c]
         and         r5,r5,#15       //r5=valor_celda
         cmp         r5,#0           //compara valor con 0
         addeq       r6,r6,#1        //(celdas_vacias++)
         beq         nay             //(valor_celda=0)
+		
+		
+		
 //        push        {r0-r10}        //guardar contexto
 //        ADR         r3, sudoku_candidatos_propagar_thumb+1 /* the last address bit is not really used to specify the address but to select between ARM and Thumb code */
-//        ADR         r14,return       /* we store the return address in r14 */
+//        ADR         r14,return       /* we store the return address in r74 */
 //        BX          r3
 //return:
 //        pop         {r0-r10}        //restablecer contexto
@@ -110,7 +105,7 @@ nay:
         add         r2,r2,#2        //c++
         b           buk2
 finbuk2:
-        add         r1,r1,#32       //f++
+        add         r7,r7,#32       //f++
         mov         r2,#0           //c=0
         b           buk1
 finbuk1:
