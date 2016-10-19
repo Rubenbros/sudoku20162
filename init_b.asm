@@ -41,6 +41,22 @@ Reset_Handler:
 # If there are more parameters you have to store them in the data stack
 # using the stack pointer
 # function __c_copy is in copy.c
+
+# function main is in prueba.c
+.extern     main
+        LDR     r3, = main
+        MOV     lr, pc
+
+# FUNCTION CALL the parameters are stored in r0 and r1
+# If there are 4 or less parameters when calling a C function
+# the compiler assumes that they have been stored in r0-r3.
+# If there are more parameters you have to store them
+# in the data stack using the stack pointer
+        BX      r3
+stop_pruebas:
+        B       stop_pruebas        /*  end of program */
+
+#####################################
         LDR     r0, =cuadricula  /*  puntero a la @ inicial de la cuadricula */
 
 /*.extern     sudoku9x9
