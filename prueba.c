@@ -104,14 +104,13 @@ int main() {
     //pruebasInitPropagar(cuadriculaF, 'A', 'T');
 
     if (
-        !sudokusIguales(cuadricula, cuadriculaA) ||
-        !sudokusIguales(cuadricula, cuadriculaB) ||
-        //!sudokusIguales(cuadricula, cuadriculaC) ||
-        !sudokusIguales(cuadricula, cuadriculaD) ||
-        !sudokusIguales(cuadricula, cuadriculaE) //||
-        //!sudokusIguales(cuadricula, cuadriculaF)
+        !sudokusIguales(cuadriculaA, cuadriculaB) ||
+        //!sudokusIguales(cuadriculaA, cuadriculaC) ||
+        !sudokusIguales(cuadriculaA, cuadriculaD) ||
+        !sudokusIguales(cuadriculaA, cuadriculaE) //||
+        //!sudokusIguales(cuadriculaA, cuadriculaF)
         ) {
-        return -1;
+        return -976;
     }
 
 /*
