@@ -1,7 +1,5 @@
 #include "sudoku_2016.h"
 
-#include <stdio.h>
-
 int sudokusIguales(CELDA cuadriculaA[NUM_FILAS][NUM_COLUMNAS],
                     CELDA cuadriculaB[NUM_FILAS][NUM_COLUMNAS]) {
     int iguales = 1; // partimos de que son iguales
@@ -68,7 +66,6 @@ int main() {
     copiarCuadricula(cuadricula, cuadriculaD);
     copiarCuadricula(cuadricula, cuadriculaE);
     copiarCuadricula(cuadricula, cuadriculaF);
-
 /*
     for (int i=0; i<NUM_FILAS; i++) {
         //std::bitset<NUM_COLUMNAS> y(cuadricula[0][0]);
@@ -101,21 +98,20 @@ int main() {
 
     pruebasInitPropagar(cuadriculaA, 'C', 'C');
     pruebasInitPropagar(cuadriculaB, 'C', 'A');
-    pruebasInitPropagar(cuadriculaC, 'C', 'T');
+    //pruebasInitPropagar(cuadriculaC, 'C', 'T');
     pruebasInitPropagar(cuadriculaD, 'A', 'C');
     pruebasInitPropagar(cuadriculaE, 'A', 'A');
-    pruebasInitPropagar(cuadriculaF, 'A', 'T');
+    //pruebasInitPropagar(cuadriculaF, 'A', 'T');
 
-    if (!sudokusIguales(cuadricula, cuadriculaA) ||
+    if (
+        !sudokusIguales(cuadricula, cuadriculaA) ||
         !sudokusIguales(cuadricula, cuadriculaB) ||
-        !sudokusIguales(cuadricula, cuadriculaC) ||
+        //!sudokusIguales(cuadricula, cuadriculaC) ||
         !sudokusIguales(cuadricula, cuadriculaD) ||
-        !sudokusIguales(cuadricula, cuadriculaE) ||
-        !sudokusIguales(cuadricula, cuadriculaF)) {
+        !sudokusIguales(cuadricula, cuadriculaE) //||
+        //!sudokusIguales(cuadricula, cuadriculaF)
+        ) {
         return -1;
-    }
-    else {
-        return 0;
     }
 
 /*
