@@ -100,12 +100,12 @@ buk2:
         cmp         r5,#0           //compara valor con 0
         addeq       r6,r6,#1        //(celdas_vacias++)
         beq         nay             //(valor_celda=0)
-        push        {r0-r10}        //guardar contexto
-        ADR         r3, sudoku_candidatos_propagar_thumb+1 /* the last address bit is not really used to specify the address but to select between ARM and Thumb code */
-        ADR         r14,return       /* we store the return address in r14 */
-        BX          r3
-return:
-        pop         {r0-r10}        //restablecer contexto
+//        push        {r0-r10}        //guardar contexto
+//        ADR         r3, sudoku_candidatos_propagar_thumb+1 /* the last address bit is not really used to specify the address but to select between ARM and Thumb code */
+//        ADR         r14,return       /* we store the return address in r14 */
+//        BX          r3
+//return:
+//        pop         {r0-r10}        //restablecer contexto
 nay:
         add         r2,r2,#2        //c++
         b           buk2
