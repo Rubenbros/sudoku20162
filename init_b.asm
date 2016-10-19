@@ -88,10 +88,10 @@ finbuc2:
         b           buc1
 finbuc1:
         mov         r1,#0           //f=0
-buk1:   
+buk1:
         cmp         r1,#288         //compara la fila con 288 (32*9)
         beq         finbuk1         //(f=9)
-buk2:   
+buk2:
         cmp         r2,#18          //compara la columna con 18 (2*9)
         beq         finbuk2         //(c=9)
         add         r4,r1,r2        //r4=[f][c]
@@ -104,9 +104,9 @@ buk2:
         ADR         r3, sudoku_candidatos_propagar_thumb+1 /* the last address bit is not really used to specify the address but to select between ARM and Thumb code */
         ADR         r14,return       /* we store the return address in r14 */
         BX          r3
-return: 
+return:
         pop         {r0-r10}        //restablecer contexto
-nay:    
+nay:
         add         r2,r2,#2        //c++
         b           buk2
 finbuk2:
@@ -132,7 +132,7 @@ sudoku_candidatos_propagar_arm:
         mov         r6,#96                  //r6=fila0=96=(32*3)
         cmp         r1,r6                   //(f>=64)
         movlt       r6,#0                   //(r6=fila0=0)
-fila0:  
+fila0:
         mov         r7,#12                  //r7=column0=12=(2*6)
         cmp         r2,r7                   //(comparar columna con 6)*2
         bge         column0                 //(c>=12)
@@ -144,7 +144,7 @@ column0:
         mov         r4,#0                   //r4=icolumna=0
         add         r8,r0,r1                //r8=celda[fila][i]
         add         r9,r0,r2                //r9=celda[i][columna]
-buck:   
+buck:
         cmp         r3,#288                 //compara la fila con 288 (32*9)
         beq         finbuck                 //(f=9)
         ldrh        r10,[r8,r4]             //r10=contenido de la celda [fila][i]
@@ -159,13 +159,13 @@ buck:
 finbuck:
         mov         r3,r6                   //r3=fila_0=f
         add         r6,r6,#96               //fila_0=fila_0+3
-buc:    
+buc:
         cmp         r3,r6                   //compara fila con fila_0+3
         bge         finbuc                  //fila>=fila_0+3
         mov         r4,r7                   //r4=columna_0=c
         add         r8,r7,#6                //r8=columna_0+3
         add         r9,r0,r3                //r9=celda[fila_0][0]
-bux:    
+bux:
         cmp         r4,r8                   //compara columna_0 con columna_0+3
         bge         finbux                  //columna_0>=columna_0+3
         ldrh        r10,[r9,r4]             //r10=celda[f][c]
@@ -173,10 +173,10 @@ bux:
         strh        r10,[r9,r4]             //celda[f][c]=celda[f][c] & mascara
         add         r4,r4,#2                //c++
         b           bux
-finbux: 
+finbux:
         add         r3,r3,#32               //f++
         b           buc
-finbuc: 
+finbuc:
         bx          r14                     //return
 
 
@@ -196,7 +196,7 @@ sudoku_candidatos_propagar_thumb:
         mvn         r5,r6                   //r5=mascara
         mov         r3,#0                   //r3=ifila=0
         mov         r4,#0                   //r4=icolumna=0
-bucx:   
+bucx:
         cmp         r4,#18
         beq         finbucx                 //(i=9)
         add         r6,r0,r1                //r6=celda[fila][i]
@@ -218,7 +218,7 @@ finbucx:
         cmp         r1,r6                   //(f>=64)
         bge         fil0
         mov         r6,#0                   //(r6=fila0=0)
-fil0:   
+fil0:
         mov         r7,#12                  //r7=column0=12=(2*6)
         cmp         r2,r7                   //(comparar columna con 6)*2
         bge         colu0                   //(c>=12)
@@ -226,17 +226,17 @@ fil0:
         cmp         r2,r7                   //(c>=6)
         bge         colu0
         mov         r7,#0                   //(r7=column0=0)
-colu0:  
+colu0:
         mov         r1,r6                   //r1=fila_0=f
         add         r6,r6,#96               //fila_0=fila_0+3
         add         r3,r7,#6                //r3=columna_0+3
         add         r0,r0,r1                //r0=celda[fila_0][0]
         add         r0,r0,r7                //r0=celda[fila_0][columna_0]
-col:    
+col:
         cmp         r1,r6                   //compara fila con fila_0+3
         bge         fincol                  //fila>=fila_0+3
         mov         r2,r7                   //r2=columna_0=c
-bus:    
+bus:
         cmp         r2,r3                   //compara columna_0 con columna_0+3
         bge         finbus                  //columna_0>=columna_0+3
         ldrh        r4,[r0]                 //r4=celda[f][c]
@@ -245,11 +245,11 @@ bus:
         add         r2,#2                   //c++
         add         r0,#2
         b           bus
-finbus: 
+finbus:
         add         r1,#32                  //f++
         add         r0,#26
         b           col
-fincol: 
+fincol:
         bx          r14                     //return
 
 ################################################################################
